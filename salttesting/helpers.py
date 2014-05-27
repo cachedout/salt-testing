@@ -17,6 +17,7 @@ import types
 import socket
 import inspect
 import logging
+import cProfile
 import __builtin__
 from functools import wraps
 
@@ -35,6 +36,15 @@ def destructiveTest(func):
         return func(cls)
     return wrap
 
+
+def profileTest(func):
+    @wraps(func)
+    def wrap(cls):
+        prof = cProfile.Profile()
+        prof_out = prof.runcall(func, cls)
+        prof.print_stats()
+        return prof_out
+    return wrap
 
 class RedirectStdStreams(object):
     '''
